@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useFormik } from "formik";
+import { Formik } from "formik";
 import "./styles.css";
 import * as Yup from 'yup';
 
@@ -46,57 +46,50 @@ const SignupForm = () => {
    // could come from props, but since we don’t want to prefill this form,
    // we just use an empty string. If we don’t do this, React will yell
    // at us.
-  const formik = useFormik({
-    initialValues: { 
-        firstName: '',
-        lastName: '',
-        email: '',
-    },
-    validationSchema: validation,
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    }
-  });
+  // const formik = useFormik({
+  //   initialValues: { 
+  //       firstName: '',
+  //       lastName: '',
+  //       email: '',
+  //   },
+  //   validationSchema: validation,
+  //   onSubmit: values => {
+  //     alert(JSON.stringify(values, null, 2));
+  //   }
+  // });
+
   return (
-    <form onSubmit={formik.handleSubmit}>
-    
-      <label htmlFor="firstName">Nombre</label>
-      <input
-        id="firstName"
-        name="firstName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.firstName}
-      />
-      {formik.errors.firstName && formik.touched.firstName ? <div>{formik.errors.firstName}</div> : null}
+    <Formik
+      initialValues={{ firstName: '', lastName: '', email: ''}}
+      validationSchema={validation}
+      onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+          alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }, 400);
+      }}
+    >
+      {formik => (
+        <form onSubmit={formik.handleSubmit}>
+          
+          <label htmlFor="firstName">Nombre</label>
+          <input id="firstName" type="text" {...formik.getFieldProps('firstName')} />
+          {formik.errors.firstName && formik.touched.firstName ? <div>{formik.errors.firstName}</div> : null}
 
 
-      <label htmlFor="lastName">Apellido</label>
-      <input
-        id="lastName"
-        name="lastName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.lastName}
-      />
-      {formik.errors.lastName && formik.touched.lastName ? <div>{formik.errors.lastName}</div> : null}
+          <label htmlFor="lastName">Apellido</label>
+          <input id="lastName" type="text" {...formik.getFieldProps('lastName')} />
+          {formik.errors.lastName && formik.touched.lastName ? <div>{formik.errors.lastName}</div> : null}
 
 
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.email}
-      />
-      {formik.errors.email && formik.touched.email ? <div>{formik.errors.email}</div> : null}
+          <label htmlFor="email">Email</label>
+          <input id="email" type="email" {...formik.getFieldProps('email')} />
+          {formik.errors.email && formik.touched.email ? <div>{formik.errors.email}</div> : null}
 
-      <button type="submit">Submit</button>
-    </form>
+          <button type="submit">Submit</button>
+        </form>
+      )}
+    </Formik>
   );
 };
 
